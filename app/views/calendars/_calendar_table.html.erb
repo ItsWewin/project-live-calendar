@@ -1,0 +1,81 @@
+<table class="table table-bordered">
+  <tr>
+    <th class="time-selector">
+        <%= render "time_select" %>
+    </th>
+    <% @partners.each do |p| %>
+        <th><%= p.name %></th>
+    <% end %>
+  </tr>
+  <% @arrangements.each do |arr| %>
+    <tr>
+        <td><%= "#{arr.start_time.strftime("%T")} -- #{arr.end_time.strftime("%T")}"%></td>
+        <% @partners.each do |p| %>
+        <td
+          class= <%= @availabilityMap["#{p.id}-#{arr.id}"].present? &&  @availabilityMap["#{p.id}-#{arr.id}"].published? ? "availability-selected" : "availability" %>
+          availability_id = <%= "#{p.id}-#{arr.id}" %>
+        >
+          <%=%>
+        </td>
+    <% end %>
+    </tr>
+  <% end %>
+</table>
+
+<style>
+  th.time-selector{
+    width: 200px;
+
+    .time-selector {
+      width: 90%%;
+    }
+  }
+
+  td.availability {
+    cursor: pointer;
+    transition: 0.4s;
+  }
+
+  td.availability:hover {
+    background-color: #dcecb5;
+    color: white;
+  }
+
+  .availability-selected: {
+    background-color: #3e8e41;
+    color: white;
+  }
+
+</style>
+
+<script>
+    $('td.availability').click(function(){
+        availabilityID =  $(this).attr('availability_id');
+
+        console.log(availabilityID);
+
+        availabilityUpdate(availabilityID, 'published')
+    });
+
+    function availabilityUpdate(availabilityID, status) {
+        $.ajax({
+            url: 'availabilities/' + availabilityID + '/update',
+            data: {
+              status: 'published'
+            },
+            method: 'PUT',
+            type: 'json',
+            success: function(data) {
+              if (data.succed) {
+                  console.log(data);
+              } else {
+                  console.log(data);
+              }
+            },
+            err: function() {
+                alert('some error occurred')
+            }
+        });
+    }
+
+</script>

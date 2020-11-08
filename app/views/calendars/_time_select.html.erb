@@ -1,0 +1,28 @@
+<div class="form-group time-selector">
+    <select class="form-control" id="calendarTimeSelect">
+    <% @can_selected_day.each do |t| %>
+      <option><%= t %></option>
+    <% end %>
+    </select>
+  </div>
+
+<script>
+
+function get_arrangements(day) {
+  $.ajax({
+    url: 'arrangments/' + day,
+    method: 'get',
+    type: 'json',
+    success: function(data) {
+      $('#calendarTimeSelect').val(day);
+    },
+    err: function() {
+      alert('some error occurred')
+    }
+  });
+}
+
+$('#calendarTimeSelect').change(function() {
+  get_arrangements($(this).val());
+})
+</script>

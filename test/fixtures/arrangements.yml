@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  start_time: 2020-11-07 13:13:49
+  end_time: 2020-11-07 13:13:49
+  published: false
+
+two:
+  start_time: 2020-11-07 13:13:49
+  end_time: 2020-11-07 13:13:49
+  published: false
