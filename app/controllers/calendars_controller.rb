@@ -1,7 +1,9 @@
 class CalendarsController < ApplicationController
 
   def index
-    @arrangements = Arrangement.find_by_day("2020-11-08")
+    start_time = Time.now.to_date.strftime("%Y-%m-%d")
+
+    @arrangements = Arrangement.find_by_day(start_time)
     @can_selected_day = Arrangement.get_all_days
     @partners = User.find_all_partners
     @availabilityMap = get_availability_map(@arrangements)
@@ -12,7 +14,8 @@ class CalendarsController < ApplicationController
     @arrangements = Arrangement.find_by_day(day)
     @can_selected_day = Arrangement.get_all_days
     @partners = User.find_all_partners
-
+    @availabilityMap = get_availability_map(@arrangements)
+    
     respond_to do |format|
       format.js
     end
@@ -22,16 +25,12 @@ class CalendarsController < ApplicationController
     def get_availability_map(arrangements)
       availabilities = Availability.get_by_arrangements(arrangements)
 
-      puts "availabilities length: #{availabilities.length}"
-
       availabilityMap = Hash.new
 
+      return availabilityMap if !availabilities.present?
+
       availabilities.each do |arr|
-
-        puts "partner_id: #{arr.partner_id}"
-        puts "arrangment_idL #{arr.arrangment_id}"
-
-        availabilityMap["#{arr.partner_id}-#{arr.arrangment_id}"] = arr
+        availabilityMap["#{arr.partner_id}-#{arr.arrangement_id}"] = arr
       end
 
       availabilityMap

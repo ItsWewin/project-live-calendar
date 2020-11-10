@@ -22,7 +22,7 @@ class Availability < ActiveRecord::Base
 
       ids.uniq!
 
-      availabilities = self.where('id in (?)', ids)
+      availabilities = self.where('arrangement_id in (?)', ids)
     end
 
     def is_status_valid?(status)
@@ -40,6 +40,6 @@ class Availability < ActiveRecord::Base
   end
 
   def published?
-    return self.status == Availability::STATUS_PUBLISHE
+    return self.status == 'published'
   end
 end

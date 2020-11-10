@@ -12,8 +12,9 @@
         <td><%= "#{arr.start_time.strftime("%T")} -- #{arr.end_time.strftime("%T")}"%></td>
         <% @partners.each do |p| %>
         <td
-          class= <%= @availabilityMap["#{p.id}-#{arr.id}"].present? &&  @availabilityMap["#{p.id}-#{arr.id}"].published? ? "availability-selected" : "availability" %>
-          availability_id = <%= "#{p.id}-#{arr.id}" %>
+          class = "<%= @availabilityMap.present? && @availabilityMap["#{p.id}-#{arr.id}"].present? && @availabilityMap["#{p.id}-#{arr.id}"].published? ? "availability selected" : "availability" %>"
+          availability_id = "<%= "#{p.id}-#{arr.id}" %>"
+          status= "<%= @availabilityMap.present? && @availabilityMap["#{p.id}-#{arr.id}"].present? && @availabilityMap["#{p.id}-#{arr.id}"].status %>"
         >
           <%=%>
         </td>
@@ -41,9 +42,10 @@
     color: white;
   }
 
-  .availability-selected: {
+  td.availability.selected {
     background-color: #3e8e41;
     color: white;
+    cursor: pointer;
   }
 
 </style>
@@ -52,22 +54,31 @@
     $('td.availability').click(function(){
         availabilityID =  $(this).attr('availability_id');
 
-        console.log(availabilityID);
+        if ($(this).attr('status') == 'published') {
+          status = 'cancel';
+        } else {
+          status = 'published';
+        }
 
-        availabilityUpdate(availabilityID, 'published')
+        availabilityUpdate($(this), availabilityID, status)
     });
 
-    function availabilityUpdate(availabilityID, status) {
+    function availabilityUpdate(targeet, availabilityID, status) {
         $.ajax({
             url: 'availabilities/' + availabilityID + '/update',
             data: {
-              status: 'published'
+              status: status
             },
             method: 'PUT',
             type: 'json',
             success: function(data) {
               if (data.succed) {
-                  console.log(data);
+                if (status == 'published') {
+                  targeet.addClass('selected');
+                } else {
+                  targeet.removeClass('selected');
+                }
+                targeet.attr('status', status);
               } else {
                   console.log(data);
               }
@@ -77,5 +88,4 @@
             }
         });
     }
-
 </script>

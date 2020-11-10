@@ -7,11 +7,10 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 # generate Arrangement
-# start_dt = Time.now.in_time_zone('Asia/Shanghai').beginning_of_day
-# end_dt = DateTime.parse('2020-12-12 00:00:00')
+start_dt = Time.now.in_time_zone('Asia/Shanghai').beginning_of_day
+end_dt = DateTime.parse('2020-12-12 00:00:00')
 
 loop do
-
   [9, 10, 11, 12, 13, 14, 15, 16, 17].each do |h|
     arr_start = start_dt  + h * 1.hour
     arr_end = arr_start + 1.hour
