@@ -19,8 +19,6 @@ class Arrangement < ActiveRecord::Base
 
         break if start_time > end_ime
 
-        puts "start_time: #{start_time}"
-
         time_list = time_list.push(start_time)
       end
 

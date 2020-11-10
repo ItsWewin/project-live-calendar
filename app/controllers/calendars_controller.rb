@@ -1,4 +1,5 @@
 class CalendarsController < ApplicationController
+  before_filter :request_login
 
   def index
     start_time = Time.now.to_date.strftime("%Y-%m-%d")
@@ -15,7 +16,7 @@ class CalendarsController < ApplicationController
     @can_selected_day = Arrangement.get_all_days
     @partners = User.find_all_partners
     @availabilityMap = get_availability_map(@arrangements)
-    
+
     respond_to do |format|
       format.js
     end
