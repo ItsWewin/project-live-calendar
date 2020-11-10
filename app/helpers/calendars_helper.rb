@@ -41,9 +41,9 @@ module CalendarsHelper
     when 'unpublished'
       @current_user.is_partner? ? "Can Published" : "Unavailable"
     when 'published'
-      @current_user.is_partner? ? "Published, Can cancel" : "Available"
+      @current_user.is_partner? ? "Published" : "Available"
     when 'cancel'
-      @current_user.is_partner? ? "Canceled" : "Cancelede"
+      @current_user.is_partner? ? "Canceled" : "Canceled"
     else
       "unknown"
     end

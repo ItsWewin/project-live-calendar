@@ -74,8 +74,10 @@
               if (data.succed) {
                 if (status == 'published') {
                   targeet.addClass('published');
+                  targeet.text('Published');
                 } else {
                   targeet.removeClass('published');
+                  targeet.text('Canceled');
                 }
                 targeet.attr('status', status);
               } else {
