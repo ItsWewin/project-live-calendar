@@ -1,9 +1,11 @@
 class Availability < ActiveRecord::Base
 
-  class << self
-    STATUS_PUBLISHE = 'published'
-    STATUS_CANCEL = 'cancel'
+  STATUS_UNPUBLISHED = 'unpublished'
+  STATUS_PUBLISHE = 'published'
+  STATUS_CANCEL = 'cancel'
 
+  class << self
+  
     def find_availability_by_partner_id_and_arrangemnt_id(partner_id, arrangement_id)
       self.find_by(partner_id: partner_id, arrangement_id: arrangement_id)
     end

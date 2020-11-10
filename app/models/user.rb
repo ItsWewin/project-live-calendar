@@ -9,10 +9,11 @@ class User < ActiveRecord::Base
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }
 
-  class << self
-    ROLE_PARTNER = 'partner'
-    ROLE_PIONEER = 'pioneer'
+  ROLE_PARTNER = 'partner'.freeze
+  ROLE_PIONEER = 'pioneer'.freeze
 
+  class << self
+  
     def find_all_partners
       self.where('role = ?', 'partner')
     end
@@ -24,5 +25,13 @@ class User < ActiveRecord::Base
     def is_partner_existed_with_id?(id)
       self.find_by(id: id, role: ROLE_PARTNER).present?
     end
+  end
+
+  def is_partner?
+    return self.role === ROLE_PARTNER
+  end
+
+  def is_pioneer?
+    return self.role === ROLE_PIONEER
   end
 end

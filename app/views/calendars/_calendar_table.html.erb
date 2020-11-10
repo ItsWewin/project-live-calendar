@@ -12,11 +12,11 @@
         <td><%= "#{arr.start_time.strftime("%T")} -- #{arr.end_time.strftime("%T")}"%></td>
         <% @partners.each do |p| %>
         <td
-          class = "<%= @availabilityMap.present? && @availabilityMap["#{p.id}-#{arr.id}"].present? && @availabilityMap["#{p.id}-#{arr.id}"].published? ? "availability selected" : "availability" %>"
-          availability_id = "<%= "#{p.id}-#{arr.id}" %>"
-          status= "<%= @availabilityMap.present? && @availabilityMap["#{p.id}-#{arr.id}"].present? && @availabilityMap["#{p.id}-#{arr.id}"].status %>"
+          class = "<%= availability_class(@availabilityMap, p.id, arr.id) %>"
+          availability_id = "<%= availability_unite_id(p.id, arr.id) %>"
+          status= "<%= availability_state(@availabilityMap, p.id, arr.id) %>"
         >
-          <%=%>
+          <%= availability_content(@availabilityMap, p.id, arr.id) %>
         </td>
     <% end %>
     </tr>
@@ -32,26 +32,25 @@
     }
   }
 
-  td.availability {
+  td.availability.published {
+    background-color: #3e8e41;
+    color: white;
+  }
+
+  td.availability.can_eidt {
     cursor: pointer;
     transition: 0.4s;
   }
 
-  td.availability:hover {
+  td.availability.can_eidt:hover {
     background-color: #dcecb5;
     color: white;
-  }
-
-  td.availability.selected {
-    background-color: #3e8e41;
-    color: white;
-    cursor: pointer;
   }
 
 </style>
 
 <script>
-    $('td.availability').click(function(){
+    $('td.availability.can_eidt').click(function(){
         availabilityID =  $(this).attr('availability_id');
 
         if ($(this).attr('status') == 'published') {
@@ -74,9 +73,9 @@
             success: function(data) {
               if (data.succed) {
                 if (status == 'published') {
-                  targeet.addClass('selected');
+                  targeet.addClass('published');
                 } else {
-                  targeet.removeClass('selected');
+                  targeet.removeClass('published');
                 }
                 targeet.attr('status', status);
               } else {
