@@ -39,7 +39,7 @@ module CalendarsHelper
 
     case status
     when 'unpublished'
-      @current_user.is_partner? ? "Can Published" : "Unavailable"
+      @current_user.is_partner? ? "Can Publish" : "Unavailable"
     when 'published'
       @current_user.is_partner? ? "Published" : "Available"
     when 'cancel'
