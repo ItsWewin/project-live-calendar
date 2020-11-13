@@ -12,11 +12,11 @@
         <td><%= "#{arr.start_time.strftime("%T")} -- #{arr.end_time.strftime("%T")}"%></td>
         <% @partners.each do |p| %>
         <td
-          class = "<%= availability_class(@availabilityMap, p.id, arr.id) %>"
+          class = "<%= availability_class(@availabilityMap, @meetingMap, p.id, arr.id) %>"
           availability_id = "<%= availability_unite_id(p.id, arr.id) %>"
-          status= "<%= availability_state(@availabilityMap, p.id, arr.id) %>"
+          status= "<%= availability_status(@availabilityMap, @meetingMap, p.id, arr.id) %>"
         >
-          <%= availability_content(@availabilityMap, p.id, arr.id) %>
+          <%= availability_content(@availabilityMap, @meetingMap, p.id, arr.id) %>
         </td>
     <% end %>
     </tr>
@@ -33,55 +33,79 @@
   }
 
   td.availability.published {
-    background-color: #3e8e41;
+    background-color: #5BBA2A !important;
     color: white;
   }
 
-  td.availability.can_eidt {
+  td.availability.can_partner_edit,
+  td.availability.can_pioneer_edit
+   {
+    background-color: #CCFF99;
     cursor: pointer;
     transition: 0.4s;
   }
 
-  td.availability.can_eidt:hover {
-    background-color: #dcecb5;
+  td.availability.can_partner_edit:hover,
+  td.availability.can_pioneer_edit:hover {
+    background-color: #CAF52D;
+    color: white;
+  }
+
+  td.availability.meeting_succeed {
+    background-color: #3e8e41 !important;
     color: white;
   }
 
 </style>
 
 <script>
-    $('td.availability.can_eidt').click(function(){
+    $('td.availability.can_partner_edit').click(function(){
         availabilityID =  $(this).attr('availability_id');
 
         if ($(this).attr('status') == 'published') {
-          status = 'cancel';
+          status = 'unpublish';
         } else {
           status = 'published';
         }
 
-        availabilityUpdate($(this), availabilityID, status)
+        meetingCreateOrUpdate($(this), availabilityID, status)
     });
 
-    function availabilityUpdate(targeet, availabilityID, status) {
+    $('td.availability.can_pioneer_edit').click(function(){
+        availabilityID =  $(this).attr('availability_id');
+
+        if ($(this).attr('status') == 'published') {
+          status = 'unpublish';
+        } else {
+          status = 'published';
+        }
+
+        console.log("xxxxxxxx");
+
+        pionnerUpdateMeetingStatus($(this), availabilityID, status);        
+    });
+
+    function pionnerUpdateMeetingStatus(target, availabilityID, status) {
         $.ajax({
-            url: 'availabilities/' + availabilityID + '/update',
+            url: 'meetings/' + availabilityID + '/pioneer_update_meeting',
+            method: 'POST',
+            type: 'json',
             data: {
               status: status
             },
-            method: 'PUT',
-            type: 'json',
             success: function(data) {
-              if (data.succed) {
-                if (status == 'published') {
-                  targeet.addClass('published');
-                  targeet.text('Published');
+              if (data.succeed) {
+                if (status == 'unpublish') {
+                  target.removeClass('meeting_succeed');
+                  target.text('cancel');
+                  target.attr('status', 'unpublish');
                 } else {
-                  targeet.removeClass('published');
-                  targeet.text('Canceled');
-                }
-                targeet.attr('status', status);
+                  target.addClass('meeting_succeed');
+                  target.text('succeed');
+                  target.attr('status', 'published');
+                }      
               } else {
-                  console.log(data);
+                console.log(data);
               }
             },
             err: function() {
@@ -89,4 +113,34 @@
             }
         });
     }
+
+    function meetingCreateOrUpdate(target, availabilityID, status) {
+        $.ajax({
+            url: 'meetings/' + availabilityID + '/create_or_update',
+            method: 'POST',
+            type: 'json',
+            data: {
+              status: status
+            },
+            success: function(data) {
+              if (data.succeed) {
+                if (status == 'unpublish') {
+                  target.removeClass('published');
+                  target.text('unpublish');
+                  target.attr('status', 'unpublish');
+                } else {
+                  target.addClass('published');
+                  target.text('Published');
+                  target.attr('status', 'published');
+                }      
+              } else {
+                console.log(data);
+              }
+            },
+            err: function() {
+                alert('some error occurred')
+            }
+        });
+    }
+    
 </script>

@@ -10,6 +10,11 @@ Rails.application.routes.draw do
 
   put 'availabilities/:arr_id/update' => 'availabilities#update'
 
+  resources :meetings
+  post 'meetings/:arr_id/create_or_update' => 'meetings#create_or_update'
+  post 'meetings/:arr_id/pioneer_update_meeting' => 'meetings#pioneer_update_meeting'
+
+
   resources :infos, only: [:index]
 
   # The priority is based upon order of creation: first created -> highest priority.

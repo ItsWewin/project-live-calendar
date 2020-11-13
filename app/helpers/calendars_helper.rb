@@ -1,51 +1,137 @@
 module CalendarsHelper
 
-  def availability_class(availabilityMap, partner_id, arrangement_id)
-    css_class = is_availability_published?(@availabilityMap, partner_id, arrangement_id) ? "availability published" : "availability"
-    
-    can_edit?(@current_user, availabilityMap, partner_id, arrangement_id) ? "#{css_class} can_eidt" : css_class
-  end
+  def availability_class(availabilityMap, meetingMap, partner_id, arrangement_id)
+    css_class = "availability"
 
-  def can_edit?(current_user, availabilityMap, partner_id, arrangement_id)
-    if current_user.is_partner?
-      return current_user.id == partner_id
-    end
-
-    return availability_state(availabilityMap, partner_id, arrangement_id) == 'published'
-  end
-
-  def is_availability_published?(availabilityMap, partner_id, arrangement_id)
     unite_id = availability_unite_id(partner_id, arrangement_id)
 
-    availabilityMap.present? && availabilityMap[unite_id].present? && @availabilityMap[unite_id].published?
+    # user is partner
+    if @current_user.is_partner?
+      if @current_user.id != partner_id
+        return css_class
+      end 
+
+      css_class = "#{css_class} can_partner_edit"
+
+      if !availabilityMap.present? ||
+         !availabilityMap[unite_id].present? ||
+         !meetingMap.present? ||
+         !meetingMap[availabilityMap[unite_id].id].present?
+
+        return css_class
+      end
+
+      partner_status = meetingMap[availabilityMap[unite_id].id].partner_status
+      pioneer_status = meetingMap[availabilityMap[unite_id].id].pioneer_status
+
+      if partner_status != "published"
+        return css_class
+      end
+
+      css_class = "#{css_class} published"
+
+      if pioneer_status != "published"
+        return css_class
+      end
+      
+      css_class = "#{css_class} meeting_succeed"
+
+      return css_class
+    end
+
+    # user is pioneer
+    if !availabilityMap.present? ||
+      !availabilityMap[unite_id].present? ||
+      !meetingMap.present? ||
+      !meetingMap[availabilityMap[unite_id].id].present?
+      
+      return css_class
+    end
+
+    partner_status = meetingMap[availabilityMap[unite_id].id].partner_status
+    pioneer_status = meetingMap[availabilityMap[unite_id].id].pioneer_status
+    
+    if partner_status != "published"
+      return css_class
+    end
+
+    css_class = "#{css_class} can_pioneer_edit"
+
+    if pioneer_status != "published"
+      return css_class
+    end
+
+    css_class = "#{css_class} meeting_succeed"
+    
+    return css_class
   end
 
   def availability_unite_id(partner_id, arrangement_id)
     availability_unite_id = "#{partner_id}-#{arrangement_id}"
   end
 
-  def availability_state(availabilityMap, partner_id, arrangement_id)
+  def availability_content(availabilityMap, meetingMap, partner_id, arrangement_id)
     unite_id = availability_unite_id(partner_id, arrangement_id)
 
-    if availabilityMap.present? && availabilityMap[unite_id].present?
-      return availabilityMap[unite_id].status
+    if @current_user.is_partner?
+      if !availabilityMap.present? ||
+        !availabilityMap[unite_id].present? ||
+        !meetingMap.present? ||
+        !meetingMap[availabilityMap[unite_id].id].present? ||
+        meetingMap[availabilityMap[unite_id].id].partner_status != "published"
+
+        return @current_user == partner_id ? "Can Publish" : ""
+      else
+
+        if meetingMap[availabilityMap[unite_id].id].pioneer_status == "published"
+          return "succeed"
+        end
+
+        return "Published"
+      end
     end
 
-    "unpublished"
+    if !availabilityMap.present? ||
+      !availabilityMap[unite_id].present? ||
+      !meetingMap.present? ||
+      !meetingMap[availabilityMap[unite_id].id].present? ||
+      meetingMap[availabilityMap[unite_id].id].partner_status != "published"
+
+      return "unavailable"
+    else
+      if meetingMap[availabilityMap[unite_id].id].pioneer_status == "published"
+        return "succeed"
+      end
+      
+      return "available"
+    end
   end
 
-  def availability_content(availabilityMap, partner_id, arrangement_id)
-    status = availability_state(availabilityMap, partner_id, arrangement_id)
+  def availability_status(availabilityMap, meetingMap, partner_id, arrangement_id)
+    unite_id = availability_unite_id(partner_id, arrangement_id)
+    
+    # 合伙人
+    if @current_user.is_partner?
+      if !availabilityMap.present? ||
+        !availabilityMap[unite_id].present? ||
+        !meetingMap.present? ||
+        !meetingMap[availabilityMap[unite_id].id].present?
 
-    case status
-    when 'unpublished'
-      @current_user.is_partner? ? "Can Publish" : "Unavailable"
-    when 'published'
-      @current_user.is_partner? ? "Published" : "Available"
-    when 'cancel'
-      @current_user.is_partner? ? "Canceled" : "Canceled"
+        return "unpublish"
+      else
+        return meetingMap[availabilityMap[unite_id].id].partner_status
+      end
+    end
+
+    # 创业者
+    if !availabilityMap.present? ||
+      !availabilityMap[unite_id].present? ||
+      !meetingMap.present? ||
+      !meetingMap[availabilityMap[unite_id].id].present?
+
+      return "unpublish"
     else
-      "unknown"
+      return meetingMap[availabilityMap[unite_id].id].pioneer_status
     end
   end
 

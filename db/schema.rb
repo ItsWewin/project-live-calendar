@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201110033450) do
+ActiveRecord::Schema.define(version: 20201113092702) do
 
   create_table "arrangements", force: :cascade do |t|
     t.datetime "start_time"
@@ -24,16 +24,19 @@ ActiveRecord::Schema.define(version: 20201110033450) do
   create_table "availabilities", force: :cascade do |t|
     t.integer  "partner_id",     limit: 8
     t.integer  "arrangement_id", limit: 8
-    t.string   "status",         limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "meetings", force: :cascade do |t|
     t.integer "availability_id", limit: 8
     t.integer "pioneer_id",      limit: 8
-    t.string  "status",          limit: 255
+    t.string  "partner_status",  limit: 255
+    t.string  "pioneer_status",  limit: 255
   end
+
+  add_index "meetings", ["availability_id"], name: "index_meetings_on_availability_id", unique: true, using: :btree
+  add_index "meetings", ["pioneer_id"], name: "index_meetings_on_pioneer_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "name",            limit: 255

@@ -8,6 +8,7 @@ class CalendarsController < ApplicationController
     @can_selected_day = Arrangement.get_all_days
     @partners = User.find_all_partners
     @availabilityMap = get_availability_map(@arrangements)
+    @meetingMap = get_meeting_map(@availabilityMap)
   end
 
   def day_change
@@ -16,7 +17,7 @@ class CalendarsController < ApplicationController
     @can_selected_day = Arrangement.get_all_days
     @partners = User.find_all_partners
     @availabilityMap = get_availability_map(@arrangements)
-
+    @meetingMap = get_meeting_map(@availabilityMap)
     respond_to do |format|
       format.js
     end
@@ -35,5 +36,25 @@ class CalendarsController < ApplicationController
       end
 
       availabilityMap
+    end
+
+    def get_meeting_map(availabilityMap)
+      meetingMap = Hash.new
+
+      availabilities = availabilityMap.values
+      
+      return meetingMap if !availabilities.present?
+    
+      ids = availabilities.map { |a| a.id}
+      meetings = Meeting.get_by_availability_ids(ids)
+
+      
+      return meetingMap if !meetings.present?
+
+      meetings.each do |m|
+        meetingMap[m.availability_id] = m
+      end
+
+      meetingMap
     end
 end

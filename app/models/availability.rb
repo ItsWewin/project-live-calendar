@@ -1,6 +1,6 @@
 class Availability < ActiveRecord::Base
 
-  STATUS_UNPUBLISHED = 'unpublished'
+  STATUS_UNPUBLISHED = 'unpublish'
   STATUS_PUBLISHE = 'published'
   STATUS_CANCEL = 'cancel'
 
@@ -12,6 +12,7 @@ class Availability < ActiveRecord::Base
 
     def create_and_update_status(partner_id, arrangement_id, status)
       self.create(partner_id: partner_id, arrangement_id: arrangement_id, status: status)
+      return self
     end
 
     def get_by_arrangements(arrangements)
@@ -43,5 +44,9 @@ class Availability < ActiveRecord::Base
 
   def published?
     return self.status == 'published'
+  end
+
+  def meeting
+    Meeting.find_by(availability_id: self.id)
   end
 end
