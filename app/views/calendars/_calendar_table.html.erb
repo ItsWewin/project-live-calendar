@@ -126,7 +126,7 @@
             success: function(data) {
               if (data.succeed) {
                 if (status == 'unpublish') {
-                  target.removeClass('published');
+                  target.removeClass('published meeting_succeed');
                   target.text('已取消');
                   target.attr('status', 'unpublish');
                 } else {
