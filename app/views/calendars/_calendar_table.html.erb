@@ -59,8 +59,12 @@
 </style>
 
 <script>
-    $('td.availability.can_partner_edit').click(function(){
-        availabilityID =  $(this).attr('availability_id');
+    $('td.availability.can_partner_edit').click(partnerEdit);
+
+    $('td.availability.can_pioneer_edit').click(pioneerEdit);
+
+    function partnerEdit() {
+       availabilityID =  $(this).attr('availability_id');
 
         if ($(this).attr('status') == 'published') {
           status = 'unpublish';
@@ -69,21 +73,19 @@
         }
 
         meetingCreateOrUpdate($(this), availabilityID, status)
-    });
+    }
 
-    $('td.availability.can_pioneer_edit').click(function(){
-        availabilityID =  $(this).attr('availability_id');
+    function pioneerEdit() {
+      availabilityID =  $(this).attr('availability_id');
 
         if ($(this).attr('status') == 'published') {
           status = 'unpublish';
         } else {
           status = 'published';
         }
-
-        console.log("xxxxxxxx");
-
-        pionnerUpdateMeetingStatus($(this), availabilityID, status);        
-    });
+        
+        pionnerUpdateMeetingStatus($(this), availabilityID, status);
+    }
 
     function pionnerUpdateMeetingStatus(target, availabilityID, status) {
         $.ajax({
@@ -142,5 +144,4 @@
             }
         });
     }
-    
 </script>

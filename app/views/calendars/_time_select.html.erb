@@ -1,5 +1,5 @@
 <div class="form-group time-selector">
-    <select class="form-control" id="calendarTimeSelect">
+    <select class="form-control" id="calendarTimeSelect" data-live-search="true">
     <% @can_selected_day.each do |t| %>
       <option><%= t %></option>
     <% end %>
@@ -7,6 +7,8 @@
   </div>
 
 <script>
+
+$('#calendarTimeSelect').selectpicker();
 
 function get_arrangements(day) {
   $.ajax({
@@ -25,4 +27,12 @@ function get_arrangements(day) {
 $('#calendarTimeSelect').change(function() {
   get_arrangements($(this).val());
 })
+
+// setInterval(IntervalFun, 5000);
+
+function IntervalFun() {
+  day = $('#calendarTimeSelect').val();
+  get_arrangements(day);
+}
+
 </script>
