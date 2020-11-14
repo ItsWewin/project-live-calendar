@@ -61,8 +61,12 @@ module CalendarsHelper
       return css_class
     end
 
-    css_class = "#{css_class} meeting_succeed"
-    
+    if meetingMap[availabilityMap[unite_id].id].pioneer_id == @current_user.id
+      css_class = "#{css_class} meeting_succeed"
+    else
+      css_class = "availability"
+    end
+
     return css_class
   end
 
@@ -83,11 +87,11 @@ module CalendarsHelper
         return @current_user == partner_id ? "Can Publish" : ""
       else
 
-        if meetingMap[availabilityMap[unite_id].id].pioneer_status == "published"
-          return "succeed"
+        if meetingMap[availabilityMap[unite_id].id].pioneer_status == "published" 
+          return "预约成功"
         end
 
-        return "Published"
+        return "已发布"
       end
     end
 
@@ -97,13 +101,13 @@ module CalendarsHelper
       !meetingMap[availabilityMap[unite_id].id].present? ||
       meetingMap[availabilityMap[unite_id].id].partner_status != "published"
 
-      return "unavailable"
+      return "不可预约"
     else
       if meetingMap[availabilityMap[unite_id].id].pioneer_status == "published"
-        return "succeed"
+        return meetingMap[availabilityMap[unite_id].id].pioneer_id == @current_user.id ? "预约成功" : "时间已占用"
       end
       
-      return "available"
+      return "可预约"
     end
   end
 

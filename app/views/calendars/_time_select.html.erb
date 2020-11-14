@@ -7,32 +7,30 @@
   </div>
 
 <script>
+  $('#calendarTimeSelect').selectpicker();
 
-$('#calendarTimeSelect').selectpicker();
+  function get_arrangements(day) {
+    $.ajax({
+      url: 'arrangments/' + day,
+      method: 'get',
+      type: 'json',
+      success: function(data) {
+        $('#calendarTimeSelect').val(day);
+      },
+      err: function() {
+        alert('some error occurred')
+      }
+    });
+  }
 
-function get_arrangements(day) {
-  $.ajax({
-    url: 'arrangments/' + day,
-    method: 'get',
-    type: 'json',
-    success: function(data) {
-      $('#calendarTimeSelect').val(day);
-    },
-    err: function() {
-      alert('some error occurred')
-    }
-  });
-}
+  $('#calendarTimeSelect').change(function() {
+    get_arrangements($(this).val());
+  })
 
-$('#calendarTimeSelect').change(function() {
-  get_arrangements($(this).val());
-})
+  // setInterval(IntervalFun, 5000);
 
-// setInterval(IntervalFun, 5000);
-
-function IntervalFun() {
-  day = $('#calendarTimeSelect').val();
-  get_arrangements(day);
-}
-
+  function IntervalFun() {
+    day = $('#calendarTimeSelect').val();
+    get_arrangements(day);
+  }
 </script>

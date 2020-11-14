@@ -55,7 +55,6 @@
     background-color: #5BBA2A !important;
     color: white;
   }
-
 </style>
 
 <script>
@@ -83,7 +82,7 @@
         } else {
           status = 'published';
         }
-        
+
         pionnerUpdateMeetingStatus($(this), availabilityID, status);
     }
 
@@ -99,15 +98,15 @@
               if (data.succeed) {
                 if (status == 'unpublish') {
                   target.removeClass('meeting_succeed');
-                  target.text('cancel');
+                  target.text('已取消');
                   target.attr('status', 'unpublish');
                 } else {
                   target.addClass('meeting_succeed');
-                  target.text('succeed');
+                  target.text('预约成功');
                   target.attr('status', 'published');
                 }      
               } else {
-                console.log(data);
+                target.text('操作失败：' + data.message);
               }
             },
             err: function() {
@@ -128,15 +127,15 @@
               if (data.succeed) {
                 if (status == 'unpublish') {
                   target.removeClass('published');
-                  target.text('unpublish');
+                  target.text('已取消');
                   target.attr('status', 'unpublish');
                 } else {
                   target.addClass('published');
-                  target.text('Published');
+                  target.text('已发布');
                   target.attr('status', 'published');
                 }      
               } else {
-                console.log(data);
+                target.text('操作失败' + data.message);
               }
             },
             err: function() {
