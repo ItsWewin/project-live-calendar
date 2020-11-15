@@ -1,6 +1,6 @@
 <div class="form-group time-selector">
   <input type="hidden" id="userID" name="userID" value=<%= @current_user.id %>>
-  <select class="form-control" id="calendarTimeSelect" data-live-search="true">
+  <select class="form-control" id="calendarTimeSelect" value="<%= params[:day] %>" data-live-search="true">
     <% @can_selected_day.each do |t| %>
       <option><%= t %></option>
     <% end %>
@@ -15,6 +15,12 @@
 
 <script>
   $('#calendarTimeSelect').selectpicker();
+
+  day = $('#calendarTimeSelect').attr('value');
+  if (day) {
+    $('#calendarTimeSelect').val(day);
+    $('#calendarTimeSelect').selectpicker('refresh');
+  }
 
   function getArrangements(day) {
     $.ajax({
