@@ -7,6 +7,12 @@
   </select>
 </div>
 
+<style>
+  .time-selector {
+    margin: 0px;
+  }
+</style>
+
 <script>
   $('#calendarTimeSelect').selectpicker();
 
@@ -34,7 +40,7 @@
     clearInterval(intervalNumber);
   }
 
-  intervalNumber = setInterval(IntervalFun, 5000);
+  intervalNumber = setInterval(IntervalFun, 10000);
 
   function IntervalFun() {
     userID = $('#userID').val()

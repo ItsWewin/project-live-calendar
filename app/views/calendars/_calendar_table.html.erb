@@ -1,10 +1,10 @@
 <table class="table table-bordered">
   <tr>
-    <th class="time-selector">
+    <th class="time-selector calendar-table-header">
         <%= render "time_select" %>
     </th>
     <% @partners.each do |p| %>
-        <th><%= p.name %></th>
+        <th class="calendar-table-header"><%= p.name %></th>
     <% end %>
   </tr>
   <% @arrangements.each do |arr| %>
@@ -54,6 +54,10 @@
   td.availability.meeting_succeed {
     background-color: #5BBA2A !important;
     color: white;
+  }
+
+  th.calendar-table-header {
+    vertical-align: middle;
   }
 </style>
 

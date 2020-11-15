@@ -140,6 +140,6 @@ module CalendarsHelper
   end
 
   def current_user_identify
-    @current_user.is_partner? ? "Partner: #{@current_user.name}" : "Pioneer: #{@current_user.name}"
+    @current_user.is_partner? ? "合伙人：#{@current_user.name}" : "创业者：#{@current_user.name}"
   end
 end
