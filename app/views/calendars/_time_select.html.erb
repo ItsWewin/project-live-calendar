@@ -1,36 +1,62 @@
 <div class="form-group time-selector">
-    <select class="form-control" id="calendarTimeSelect" data-live-search="true">
+  <input type="hidden" id="userID" name="userID" value=<%= @current_user.id %>>
+  <select class="form-control" id="calendarTimeSelect" data-live-search="true">
     <% @can_selected_day.each do |t| %>
       <option><%= t %></option>
     <% end %>
-    </select>
-  </div>
+  </select>
+</div>
 
 <script>
   $('#calendarTimeSelect').selectpicker();
 
-  function get_arrangements(day) {
+  function getArrangements(day) {
     $.ajax({
-      url: 'arrangments/' + day,
+      url: 'calendars/' + day,
       method: 'get',
       type: 'json',
       success: function(data) {
         $('#calendarTimeSelect').val(day);
       },
       err: function() {
-        alert('some error occurred')
+        alert('some error occurred');
       }
     });
   }
 
   $('#calendarTimeSelect').change(function() {
-    get_arrangements($(this).val());
+    getArrangements($(this).val());
   })
 
-  // setInterval(IntervalFun, 5000);
+  var intervalNumber
+  if (intervalNumber) {
+    console.log("intervalNumber", intervalNumber);
+    clearInterval(intervalNumber);
+  }
+
+  intervalNumber = setInterval(IntervalFun, 5000);
 
   function IntervalFun() {
-    day = $('#calendarTimeSelect').val();
-    get_arrangements(day);
+    userID = $('#userID').val()
+    $.ajax({
+      url: 'calendars/need_refresh/' + userID,
+      method: 'get',
+      type: 'json',
+      success: function(data) {
+        console.log("succeed", data)
+
+        if (data.succeed) {
+          console.log("need refresh", data)
+          day = $('#calendarTimeSelect').val();
+          getArrangements(day)
+        } else {
+          console.log("need not refresh", data)
+          console.log(data)
+        }
+      },
+      err: function() {
+        alert('some error occurred');
+      }
+    });
   }
 </script>

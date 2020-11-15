@@ -1,6 +1,9 @@
 class Meeting < ActiveRecord::Base
+  after_save :update_date_change_mark
+
   STATUS_PUBLISHED = "published"
   STATUS_UNPUBLISHED = "unpublish"
+  DATA_CHANGE_KEY = "meeting.data.change"
   
   class << self
     def create_or_partner_republish(availability_id)
@@ -23,5 +26,9 @@ class Meeting < ActiveRecord::Base
 
   def succeed?
     return self.partner_status == STATUS_PUBLISHED && pioneer_status == STATUS_PUBLISHED
+  end
+
+  def update_date_change_mark
+    MyRedis.set(DATA_CHANGE_KEY, "")
   end
 end

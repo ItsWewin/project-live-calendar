@@ -2,7 +2,7 @@ class MeetingsController < ApplicationController
   before_filter :params_valid, :only => [:create_or_update, :pioneer_update_meeting]
   before_filter :request_availability, :only => [:create_or_update, :pioneer_update_meeting]
   before_filter :can_create_availability, :only => [:create_or_update]
-
+  
   def create_or_update
     begin
       if @availability.present?

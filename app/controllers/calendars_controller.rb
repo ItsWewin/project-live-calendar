@@ -1,5 +1,8 @@
 class CalendarsController < ApplicationController
-  before_filter :request_login
+  before_filter :http_basic_auth, :except => [:need_refresh]
+  before_filter :current_user, :except => [:need_refresh]
+  before_filter :request_login, :except => [:need_refresh]
+  after_filter :date_refreshed_mark
 
   def index
     start_time = Time.now.to_date.strftime("%Y-%m-%d")
@@ -13,6 +16,7 @@ class CalendarsController < ApplicationController
 
   def day_change
     day = params[:day]
+
     @arrangements = Arrangement.find_by_day(day)
     @can_selected_day = Arrangement.get_all_days
     @partners = User.find_all_partners
@@ -21,6 +25,23 @@ class CalendarsController < ApplicationController
     respond_to do |format|
       format.js
     end
+  end
+
+  def need_refresh
+    @user_id = params[:user_id]
+    if !@user_id.present?
+      return render json: {succeed: false, message: "user id is invalid"}
+    end
+
+    update_marks = MyRedis.get(Meeting::DATA_CHANGE_KEY)
+    if update_marks.present?
+      cache_data = JSON.parse(update_marks)
+      if cache_data["data:fresh:user.id-#{@user_id}"]
+        return render json: {succeed: false, message: "all data is refreshed"}
+      end
+    end
+
+    return render json: {succeed: true, message: "need refreshed"}
   end
 
   private
@@ -56,5 +77,19 @@ class CalendarsController < ApplicationController
       end
 
       meetingMap
+    end
+
+    def date_refreshed_mark
+      cache_data = Hash.new
+
+      update_marks = MyRedis.get(Meeting::DATA_CHANGE_KEY)
+      if update_marks.present?
+        cache_data = JSON.parse(update_marks)
+      end
+
+      cache_key = "data:fresh:user.id-#{@user_id}"
+      cache_data[cache_key] = true
+      
+      MyRedis.set(Meeting::DATA_CHANGE_KEY, cache_data.to_json)
     end
 end

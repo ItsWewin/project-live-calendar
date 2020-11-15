@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
   before_filter :current_user
 
   def http_basic_auth
-
     result = authenticate_or_request_with_http_basic do |name, password|
         user = User.find_by_user_name(name)
 
