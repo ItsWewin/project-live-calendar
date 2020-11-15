@@ -97,9 +97,9 @@ module CalendarsHelper
 
         return @current_user == partner_id ? "Can Publish" : ""
       else
-
-        if meetingMap[availabilityMap[unite_id].id].pioneer_status == "published" 
-          return "预约成功"
+        meeting = meetingMap[availabilityMap[unite_id].id]
+        if meeting.pioneer_status == "published"
+          return "预约成功：#{ @pioneerUserIDMap[meeting.pioneer_id].name }"
         end
 
         return "已发布"

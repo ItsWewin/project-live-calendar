@@ -12,6 +12,7 @@ class CalendarsController < ApplicationController
     @partners = User.find_all_partners
     @availabilityMap = get_availability_map(@arrangements)
     @meetingAndAvailabilityIDMap, @meetingAndArrangementIDMap  = get_meeting_map(@availabilityMap)
+    @pioneerUserIDMap = get_pioneer_user_map(@meetingAndAvailabilityIDMap)
   end
 
   def day_change
@@ -22,7 +23,8 @@ class CalendarsController < ApplicationController
     @partners = User.find_all_partners
     @availabilityMap = get_availability_map(@arrangements)
     @meetingAndAvailabilityIDMap, @meetingAndArrangementIDMap  = get_meeting_map(@availabilityMap)
-    
+    @pioneerUserIDMap = get_pioneer_user_map(@meetingAndAvailabilityIDMap)
+
     respond_to do |format|
       format.js
     end
@@ -102,5 +104,21 @@ class CalendarsController < ApplicationController
       cache_data[cache_key] = true
       
       MyRedis.set(Meeting::DATA_CHANGE_KEY, cache_data.to_json)
+    end
+
+    def get_pioneer_user_map(meetingMap)
+      userIDMap = Hash.new
+
+      meetings = meetingMap.values
+      return userIDMap if !meetings.present?
+
+      pioneer_ids = meetings.map {|m| m.pioneer_id}
+
+      users = User.where('id in (?)', pioneer_ids)
+
+      userIDMap = Hash.new
+      users.each {|u| userIDMap[u.id] = u}
+
+      userIDMap
     end
 end
