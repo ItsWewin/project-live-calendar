@@ -5,7 +5,8 @@ class ApplicationController < ActionController::Base
 
   # http_basic_authenticate_with name: "dhh", password: "secret"
   
-  before_filter :http_basic_auth
+  # before_filter :http_basic_auth
+  before_filter :login_most
   before_filter :current_user
 
   def http_basic_auth
@@ -27,6 +28,12 @@ class ApplicationController < ActionController::Base
     result
   end
 
+  def login_most
+    unless session[:user_id]
+      return redirect_to new_session_path
+    end
+  end
+
   def current_user
     return unless session[:user_id]
 
@@ -37,7 +44,7 @@ class ApplicationController < ActionController::Base
 
   def request_login
     if !@current_user.present? 
-      return redirect_to infos_path
+      return redirect_to sessions_path
     end
   end
 

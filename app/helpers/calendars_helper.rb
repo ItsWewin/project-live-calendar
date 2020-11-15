@@ -9,7 +9,7 @@ module CalendarsHelper
     if @current_user.is_partner?
       if @current_user.id != partner_id
         return css_class
-      end 
+      end
 
       css_class = "#{css_class} can_partner_edit"
 
