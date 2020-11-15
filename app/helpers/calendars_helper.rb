@@ -55,6 +55,17 @@ module CalendarsHelper
       return css_class
     end
 
+    meetings = @meetingAndArrangementIDMap[arrangement_id]
+    meetings.each do |m|
+      if m.pioneer_id == @current_user.id &&
+        m.pioneer_status == "published" &&
+        m.partner_status == "published" &&
+        m.availability_id != availabilityMap[unite_id].id
+
+          return css_class
+      end
+    end
+
     css_class = "#{css_class} can_pioneer_edit"
 
     if pioneer_status != "published"
@@ -103,6 +114,18 @@ module CalendarsHelper
 
       return "不可预约"
     else
+      meetings = @meetingAndArrangementIDMap[arrangement_id]
+  
+      meetings.each do |m|
+        if m.pioneer_id == @current_user.id &&
+          m.pioneer_status == "published" &&
+          m.partner_status == "published" &&
+          m.availability_id != availabilityMap[unite_id].id
+
+            return "不可预约"
+        end
+      end
+
       if meetingMap[availabilityMap[unite_id].id].pioneer_status == "published"
         return meetingMap[availabilityMap[unite_id].id].pioneer_id == @current_user.id ? "预约成功" : "时间已占用"
       end

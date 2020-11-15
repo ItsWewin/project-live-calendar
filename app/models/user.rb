@@ -34,4 +34,17 @@ class User < ActiveRecord::Base
   def is_pioneer?
     return self.role === ROLE_PIONEER
   end
+
+  def pioneer_has_another_meeting_in_this_time(arrangement_id)
+    arrangement = Arrangement.find(arrangement_id)
+    unless arrangement.present?
+      return false
+    end
+
+    availabilities = arrangement.availabilities
+
+    meetings = Meeting.get_by_availability_and_pioneer_id(availabilities, self.id)
+
+    return meetings.present?
+  end
 end

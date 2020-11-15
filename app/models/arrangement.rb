@@ -29,4 +29,8 @@ class Arrangement < ActiveRecord::Base
       self.find(id).present?
     end
   end
+
+  def availabilities
+    Availability.find_by(arrangement_id: self.id)
+  end
 end

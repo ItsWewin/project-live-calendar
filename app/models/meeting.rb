@@ -22,6 +22,10 @@ class Meeting < ActiveRecord::Base
     def get_by_availability_ids(ids)
       self.where('availability_id in (?)', ids)
     end
+
+    def get_by_availability_and_pioneer_id(availability_ids, pioneer_id)
+      Meeting.where('pioneer_id = ? and partner_status = ? and pioneer_status = ? and availability_id in (?)', pioneer_id, STATUS_PUBLISHED, STATUS_PUBLISHED, availability_ids)
+    end
   end
 
   def succeed?

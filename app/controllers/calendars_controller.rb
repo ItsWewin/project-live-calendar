@@ -11,7 +11,7 @@ class CalendarsController < ApplicationController
     @can_selected_day = Arrangement.get_all_days
     @partners = User.find_all_partners
     @availabilityMap = get_availability_map(@arrangements)
-    @meetingMap = get_meeting_map(@availabilityMap)
+    @meetingAndAvailabilityIDMap, @meetingAndArrangementIDMap  = get_meeting_map(@availabilityMap)
   end
 
   def day_change
@@ -21,7 +21,8 @@ class CalendarsController < ApplicationController
     @can_selected_day = Arrangement.get_all_days
     @partners = User.find_all_partners
     @availabilityMap = get_availability_map(@arrangements)
-    @meetingMap = get_meeting_map(@availabilityMap)
+    @meetingAndAvailabilityIDMap, @meetingAndArrangementIDMap  = get_meeting_map(@availabilityMap)
+    
     respond_to do |format|
       format.js
     end
@@ -60,23 +61,33 @@ class CalendarsController < ApplicationController
     end
 
     def get_meeting_map(availabilityMap)
-      meetingMap = Hash.new
+      meetingAndAvailabilityIDMap = Hash.new
+      meetingAndArrangementIDMap = Hash.new
 
       availabilities = availabilityMap.values
       
-      return meetingMap if !availabilities.present?
-    
+      return [meetingAndAvailabilityIDMap, meetingAndArrangementIDMap] if !availabilities.present?
+
       ids = availabilities.map { |a| a.id}
       meetings = Meeting.get_by_availability_ids(ids)
 
+      availabilityIDMap = Hash.new
+      ids = availabilities.each { |a| availabilityIDMap[a.id] = a }
       
-      return meetingMap if !meetings.present?
+      return [meetingAndAvailabilityIDMap, meetingAndArrangementIDMap]if !meetings.present?
 
       meetings.each do |m|
-        meetingMap[m.availability_id] = m
+        meetingAndAvailabilityIDMap[m.availability_id] = m
+
+        arrangement_id = availabilityIDMap[m.availability_id].arrangement_id
+        if meetingAndArrangementIDMap[arrangement_id].present?
+          meetingAndArrangementIDMap[arrangement_id] << m
+        else
+          meetingAndArrangementIDMap[arrangement_id] = [m]
+        end
       end
 
-      meetingMap
+      [meetingAndAvailabilityIDMap, meetingAndArrangementIDMap]
     end
 
     def date_refreshed_mark

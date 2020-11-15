@@ -24,6 +24,13 @@ class MeetingsController < ApplicationController
       return render json: {succeed: false, message: '合伙人未发布'}
     end
 
+    # 创业者在同一时间已经有其他会议
+    if @status == Meeting::STATUS_PUBLISHED &&
+       @current_user.pioneer_has_another_meeting_in_this_time(@availability.arrangement_id)
+      
+       return render json: {succeed: false, message: "你在该时间段有约"}
+    end
+
     begin
       ActiveRecord::Base.transaction do
         meeting = @availability.meeting

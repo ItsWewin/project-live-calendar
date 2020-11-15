@@ -12,11 +12,11 @@
         <td><%= "#{arr.start_time.strftime("%T")} -- #{arr.end_time.strftime("%T")}"%></td>
         <% @partners.each do |p| %>
         <td
-          class = "<%= availability_class(@availabilityMap, @meetingMap, p.id, arr.id) %>"
+          class = "<%= availability_class(@availabilityMap, @meetingAndAvailabilityIDMap, p.id, arr.id) %>"
           availability_id = "<%= availability_unite_id(p.id, arr.id) %>"
-          status= "<%= availability_status(@availabilityMap, @meetingMap, p.id, arr.id) %>"
+          status= "<%= availability_status(@availabilityMap, @meetingAndAvailabilityIDMap, p.id, arr.id) %>"
         >
-          <%= availability_content(@availabilityMap, @meetingMap, p.id, arr.id) %>
+          <%= availability_content(@availabilityMap, @meetingAndAvailabilityIDMap, p.id, arr.id) %>
         </td>
     <% end %>
     </tr>
