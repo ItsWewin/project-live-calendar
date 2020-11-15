@@ -44,3 +44,5 @@ gem 'unicorn'
 gem 'sprockets', '~> 3.0'
 
 gem 'bootstrap', '~> 4.2.1'
+
+gem 'redis-rails'
