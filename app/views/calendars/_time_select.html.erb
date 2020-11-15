@@ -43,21 +43,15 @@
   intervalNumber = setInterval(IntervalFun, 5000);
 
   function IntervalFun() {
-    userID = $('#userID').val()
+    userID = $('#userID').val();
     $.ajax({
       url: 'calendars/need_refresh/' + userID,
       method: 'get',
       type: 'json',
       success: function(data) {
-        console.log("succeed", data)
-
         if (data.succeed) {
-          console.log("need refresh", data)
           day = $('#calendarTimeSelect').val();
-          getArrangements(day)
-        } else {
-          console.log("need not refresh", data)
-          console.log(data)
+          getArrangements(day);
         }
       },
       err: function() {
