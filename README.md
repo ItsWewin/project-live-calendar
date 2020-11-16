@@ -3,7 +3,7 @@
 这是一个小项目，实现的是一个在线的会面预约系统，用户 A 可以发布自己可以会面的时间，B 可以根据自己的时间从 A 发布的时间中选取时间，以达成一个会面邀约。
 
 ### 项目概况
-项目使用 Ruby On Rails 框架，为了有个良好的样式引入了 bootstrap 作为前端 UI 库；因为个人不是很喜欢 Rails 的 [Active Record Associations](https://guides.rubyonrails.org/association_basics.html) 层面的 belongs_to、has_many 的写法，加之项目 model 层较为简单，所以在这个项目中没有使用这些；为了保证用户前端页面数据的事实性，使用了 js 轮训请求刷新页面，同时为了避免轮训导致的服务端资源浪费，结合 Redis 当没有数据跟新的时候，直接返回，避免无意义的查库等业务代码执行。
+项目使用 Ruby On Rails 框架，为了有个良好的样式引入了 bootstrap 作为前端 UI 库（为了一个页面引入 bootstrap，确实有点儿夸张了）；因为个人不是很喜欢 Rails 的 [Active Record Associations](https://guides.rubyonrails.org/association_basics.html) 层面的 belongs_to、has_many 的写法，加之这个小项目 model 层较为简单，所以在这个项目中没有使用这些；为了保证用户前端页面数据的事实性，使用了 js 轮循请求刷新页面，同时为了避免轮循导致的服务端资源浪费，结合 Redis 当没有数据更新的时候，直接返回，避免无意义的查库等业务代码执行。
 
 ### 依赖
 - Ruby 版本
